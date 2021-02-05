@@ -1,86 +1,3 @@
-SELECT CONCAT(o.owner_id, ', ', o.pet_id) AS owner_pet, visits_count
-FROM owners o
-LEFT JOIN visits v
-ON o.pet_id = v.pet_id
-WHERE visits_count >= 3
-UNION
-SELECT CONCAT(o2.owner_id, ', ', o2.pet_id) AS owner_pet, visits_count
-from owners_2 o2
-LEFT JOIN visits v
-ON o2.pet_id = v.pet_id
-WHERE visits_count >= 3
-ORDER BY visits_count DESC;
---
-SELECT o.owner_id,transaction_id, date, service 
-FROM owners o 
-LEFT JOIN transactions t 
-ON o.pet_id = t.pet_id 
-WHERE transaction_id IS NOT NULL 
-UNION 
-SELECT o2.owner_id,transaction_id, date, service 
-FROM owners_2 o2 
-LEFT JOIN transactions t 
-ON o2.pet_id = t.pet_id 
-WHERE transaction_id 
-IS NOT NULL 
-ORDER BY date, transaction_id
---
-
-WITH max_visits AS
-(
-	SELECT v.pet_id, MAX(visits_count)
-	FROM visits v
-	GROUP BY pet_id
-)
-SELECT o.owner_id, max_visits FROM max_visits 
-LEFT JOIN owners o
-ON v.pet_id = o.pet_id
-ORDER BY max_visits DESC;
-
- AS max_visits, owner_id 
-FROM visits v
-LEFT JOIN owner_id o
-ORDER BY max_visits DESC
-
-SELECT visits_count AS max_visits, owner_id
-from visits v
-LEFT JOIN owners o
-ON v.pet_id = o.pet_id
-ORDER BY max_visits DESC;
-
-SELECT * FROM transactions
-
-SELECT owner_id, t.pet_id, date, service
-FROM transactions t
-LEFT JOIN owners o
-ON t.pet_id = o.pet_id
-WHERE date = '2019-06-17' OR service = 'haircut'
-ORDER BY date;
-
-SELECT pet_id, service,
-CASE
-	WHEN service =  'nails' THEN 'gift'
-	WHEN service <> 'nails' THEN 'no gift'
-	ELSE ' '
-END AS get_gift
-FROM transactions
-ORDER BY get_gift;
-
-SELECT 
-COUNT(CASE WHEN date = '2019-06-17' THEN '' END) AS day_one,
-COUNT(CASE WHEN date = '2019-06-18' THEN '' END) AS day_two
-FROM transactions;
-
-SELECT size, COUNT(size) AS size_count 
-FROM 
-(
-	SELECT * FROM owners
-	UNION
-	SELECT * FROM owners_2
-) all_owners
-GROUP BY size
-ORDER BY size DESC;
-
 SOLUTIONS
 
 1. Write a query that returns the owner_id of the owners table and the transaction_id and service of the transactions table. 
@@ -104,8 +21,6 @@ FROM transactions AS t
 LEFT OUTER JOIN owners AS o
 ON t.pet_id = o.pet_id
 ORDER BY owner_id;
-
-
 
 2. Write a query that returns the owner_id, pet_id, transaction_id, and visits_count fields from their respective tables. 
 
@@ -141,9 +56,6 @@ ON t.pet_id = o.pet_id
 LEFT OUTER JOIN visits as v
 on t.pet_id = v.pet_id
 ORDER BY transaction_id;
-
-
-
 
 3. Write a query that returns the pet_id and size from the owners table, and the visits_count (as the alias num_visits) from the visits table. 
 
